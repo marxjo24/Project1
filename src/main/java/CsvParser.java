@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import java.io.FileInputStream;
@@ -6,6 +7,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +73,22 @@ public class CsvParser {
         }
     }
 
+    public List<BookStoreReport> toClass(){
+        List bookStoreReportList = new <BookStoreReport>ArrayList();
+        String toBookStoreReport = "";
+        for (Object row : fileRows) {
+            for (String fields : (String[]) row) {
+                toBookStoreReport +=  fields + "*";
+            }
+            if(!toBookStoreReport.contains("isbn")){
+                BookStoreReport bookStoreReport = new BookStoreReport(toBookStoreReport);
+                bookStoreReportList.add(bookStoreReport);
+            }
+            toBookStoreReport = "";
+        }
+        return bookStoreReportList;
+    }
+
     private boolean checkFile(String csvfile) {
         /** checkFile - checks to ensure the file exists
          * @return false on file not found, true on found
@@ -81,4 +100,5 @@ public class CsvParser {
         }
         return true;
     }
+
 }
